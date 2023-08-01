@@ -22,7 +22,7 @@ MonoBehaviour:
   secondsToWait: 0.6
   secondsBetweenAttackShots: 0.2
   mover: {fileID: 0}
-  timeToShoot: 1212
+  maxRandomTimeToShoot: 1121
   projectilePrefab: {fileID: 6914979828652800764, guid: 6f7175246fefbba48a18b0af94288235, type: 3}
   attackHeight: 1.5
 --- !u!1001 &1671883912495561435

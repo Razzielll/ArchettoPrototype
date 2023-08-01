@@ -86,7 +86,7 @@ MonoBehaviour:
   updateFrequency: 0.2
   arrowPrefab: {fileID: 2823190223326201966, guid: 286a2ca4b8da0bc44a4d7a9baae754f4, type: 3}
   bowPositionHeight: 1.5
-  shootingFrequency: 1
+  shootingFrequency: 3
 --- !u!114 &2393842365304583932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3788c19a94bc4d94fa66b3c48613b6f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToDestroy: 2
+  timeToDestroy: 0
   maxHealth: 50
 --- !u!54 &4728913694162651945
 Rigidbody:
