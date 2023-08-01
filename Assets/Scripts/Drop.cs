@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class Drop : MonoBehaviour
 {
-    [SerializeField] DropItem[] dropItems;
-    [SerializeField] float dropChance = 0.5f;
+    [SerializeField] DropItem dropItem;
     Health health;
 
     private void Start()
@@ -12,18 +11,9 @@ public class Drop : MonoBehaviour
         health = GetComponent<Health>();
         health.OnDie +=DropLoot;
     }
-    public void DropLoot()
+    public void DropLoot(Health health)
     {
-        float chance = Random.Range(0, 1f);
-        if (dropChance <= chance)
-        {
-            return;
-        }
-        if (dropItems.Length == 0)
-        {
-            return;
-        }
-        int randNumber = Random.Range(0, dropItems.Length);
-        Instantiate(dropItems[randNumber], transform.position + Vector3.up, Quaternion.identity);
+        
+        Instantiate(dropItem, transform.position + Vector3.up, Quaternion.identity);
     }
 }

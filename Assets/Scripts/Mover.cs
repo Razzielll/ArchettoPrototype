@@ -41,6 +41,7 @@ public class Mover : MonoBehaviour
     public void CancelMoveAction()
     {
         isRunning = false;
+        navMeshAgent.speed = 0f;
         navMeshAgent.isStopped = true;
     }
 

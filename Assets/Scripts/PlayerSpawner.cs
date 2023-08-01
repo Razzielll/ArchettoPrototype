@@ -6,7 +6,7 @@ public class PlayerSpawner : MonoBehaviour
 {
     [SerializeField] GameObject playerPrefab;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         Instantiate(playerPrefab, transform.position, Quaternion.identity);
     }

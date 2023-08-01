@@ -2,51 +2,53 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.VFX;
 
-public class EnemyRanged : MonoBehaviour
+public class EnemyRanged : EnemyAI
 {
-    [SerializeField] private NavMeshAgent navMeshAgent;
+    [SerializeField] private float secondsToWait = 0.6f;
+    [SerializeField] private float secondsBetweenAttackShots = 0.2f;
+   // [SerializeField] private NavMeshAgent navMeshAgent;
     [SerializeField] private Mover mover;
+    
     [SerializeField] float timeToShoot = 3f;
     [SerializeField] GameObject projectilePrefab;
     [SerializeField] float attackHeight = 1.5f;
-    [SerializeField] Transform player;
 
     private float shotTimer =0f;
-    private EnemyAI enemyAI;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        enemyAI = GetComponent<EnemyAI>();
-        enemyAI.OnStateChanged += EnemyAI_OnStateChanged;
+        base.Start();
+       // enemyAI = GetComponent<EnemyAI>();
+        
     }
 
-    private void EnemyAI_OnStateChanged(object sender, EnemyAI.OnStateChangedEventArgs e)
-    {
-        throw new System.NotImplementedException();
-    }
+
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        HandleMovement();
-        HandleAttack();
-        shotTimer += Time.deltaTime;
-    }
-
-    private void HandleMovement()
-    {
-        if (enemyAI.GetState() == State.Running)
+        if (GetComponent<Health>().IsDead())
         {
-            mover.MoveTo(transform.position + transform.forward);
-        }
-        else
-        {
-            mover.CancelMoveAction();
+            return;
         }
         
+
+
+        HandleShooting();
+        HandleAttack();
+        HandleRotation();
+        shotTimer += Time.deltaTime;
+        HandleMovement(transform.forward, 2f);
+    }
+
+    protected override void UpdateMoveDirection()
+    {
+        float randomX = Random.Range(-10, 10);
+        float randomZ = Random.Range(-10, 10);
+        transform.forward = new Vector3(randomX, 0, randomZ);
     }
 
     private void HandleAttack()
@@ -54,65 +56,51 @@ public class EnemyRanged : MonoBehaviour
         float randNumber = Random.Range(0, timeToShoot);
         if(shotTimer > randNumber)
         {
+          //  Debug.Log("Attack");
             shotTimer = 0f;
-            enemyAI.SetState(State.Idle);
-            StartCoroutine(ShootRoutine());
+           SetState(State.Idle);
+            
+           StartCoroutine(ShootRoutine());
             
         }
     }
 
     private void Shoot()
     {
-        if (player == null)
+        if (playerTransform == null)
         {
             return;
         }
+
+        //Debug.Log("Shhoot");
         GameObject arrowGO = Instantiate(projectilePrefab, transform.position + attackHeight * Vector3.up, Quaternion.identity);
 
-        arrowGO.transform.forward = player.transform.position - transform.position;
+        arrowGO.transform.forward = playerTransform.position - transform.position;
     }
 
     IEnumerator ShootingAttack()
     {
         for (int i = 0; i < 3; i++)
         {
+           // Debug.Log("Shhooting");
             Shoot();
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(secondsBetweenAttackShots);
         }
     }
 
     IEnumerator ShootRoutine()
     {
-        enemyAI.SetState(State.Atacking);
-        yield return new WaitForSeconds(0.2f);
+        SetState(State.Atacking);
+        yield return new WaitForSeconds(secondsToWait);
+        
+        StartCoroutine(ShootingAttack());
+        yield return new WaitForSeconds(secondsToWait);
         
 
-        yield return new WaitForSeconds(0.2f);
-        StartCoroutine(ShootingAttack());
-
-        yield return new WaitForSeconds(0.2f);
-
-        enemyAI.SetState(State.Running);
-    }
-    private bool CanMoveToDestination(Vector3 destination)
-    {
-        // Calculate the path from the current position to the destination
-        NavMeshPath path = new NavMeshPath();
-        bool canMove = navMeshAgent.CalculatePath(destination, path);
-
-        // If the path status is not "PathComplete," the destination is not reachable
-        if (path.status != NavMeshPathStatus.PathComplete)
-        {
-            canMove = false;
-        }
-
-        return canMove;
+        yield return new WaitForSeconds(secondsToWait);
+        
+        SetState(State.Running);
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        float randomX = Random.Range(-10, 10);
-        float randomZ = Random.Range(-10, 10);
-        transform.forward = new Vector3(randomX, 0, randomZ);
-    }
+    
 }

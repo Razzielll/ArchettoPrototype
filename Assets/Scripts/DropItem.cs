@@ -19,8 +19,8 @@ public class DropItem : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-          //  other.GetComponent<Inventory>().AddCoin();
-
+            other.GetComponent<Inventory>().AddCoin();
+            GetComponent<Collider>().enabled = false;
             Destroy(this.gameObject);
         }
     }

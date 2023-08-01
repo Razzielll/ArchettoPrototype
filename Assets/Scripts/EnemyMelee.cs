@@ -1,26 +1,28 @@
 
 using UnityEngine;
 
-public class EnemyMelee : MonoBehaviour
+public class EnemyMelee : EnemyAI
 {
     [SerializeField] private float attackDelay = 1f;
     [SerializeField] private float damageValue = 3f;
-    [SerializeField] Mover mover;
-    [SerializeField] Transform playerTransform;
+    
+   
     private float attackTimer = 0f;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         attackTimer = 0f; 
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+       
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         attackTimer += Time.deltaTime;
-        mover.MoveTo(playerTransform.position);
+        
     }
     private void OnTriggerEnter(Collider other)
     {

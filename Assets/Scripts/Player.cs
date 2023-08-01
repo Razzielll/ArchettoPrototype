@@ -23,6 +23,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] float rotateSpeed = 20f;
     [SerializeField] private GameInput gameInput;
+    [SerializeField] private float playerRadius = 0.4f;
+    [SerializeField] private float playerHeight = 1.0f;
 
     private bool isRunning = false;
     private State state;
@@ -105,8 +107,7 @@ public class Player : MonoBehaviour
         Vector2 inputVector = gameInput.GetMovementVectorNormalized();
         Vector3 moveDir = new Vector3(inputVector.x, 0, inputVector.y);
         float moveDistance = Time.deltaTime * moveSpeed;
-        float playerRadius = 0.4f;
-        float playerHeight = 1.0f;
+        
         bool canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDir, moveDistance);
 
         if (!canMove)
@@ -145,7 +146,6 @@ public class Player : MonoBehaviour
         if (canMove)
         {
             transform.position += moveDir * moveDistance;
-            
         }
 
 
@@ -166,7 +166,6 @@ public class Player : MonoBehaviour
                 state = state
             });
         }
-        
         transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime * rotateSpeed);
     }
 

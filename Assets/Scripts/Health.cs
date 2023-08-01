@@ -8,7 +8,7 @@ public class Health : MonoBehaviour
     [SerializeField] float maxHealth = 20;
     float currentHealth = 0;
     bool isDead = false;
-    public event Action OnDie;
+    public event Action<Health> OnDie;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +32,7 @@ public class Health : MonoBehaviour
 
     private void Die()
     {
-        OnDie?.Invoke();
+        OnDie?.Invoke(this);
         if (!this.gameObject.CompareTag("Player"))
         {
             isDead = true;

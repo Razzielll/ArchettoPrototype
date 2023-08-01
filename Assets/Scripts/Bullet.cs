@@ -50,7 +50,7 @@ public class Bullet : MonoBehaviour
 
     public virtual void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.CompareTag("Player"))
+        if (collision.transform.CompareTag("Player") || collision.transform.CompareTag("DropItem"))
         {
             return;
         }
@@ -62,6 +62,7 @@ public class Bullet : MonoBehaviour
         {
             return;
         }
+        
         Destroy(this.gameObject);
     }
 

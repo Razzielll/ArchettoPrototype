@@ -1,16 +1,27 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] GameObject enemyPrefab;
+    public event EventHandler<OnEnemySpawnEventArgs> OnEnemySpawn;
+
+    public class OnEnemySpawnEventArgs: EventArgs
+    {
+        public EnemyAI enemyAI;
+    }
+
+    [SerializeField] GameObject[] enemyPrefabs;
     [SerializeField] Transform spawnCenter;
     [SerializeField] float spawnLenghtX;
     [SerializeField] float spawnLenghtY;
     [SerializeField] float spawnPerSecond = 1f;
     [SerializeField] float spawnQuantity = 10f;
     [SerializeField] Transform enemyContainer;
+
+
     float timer = 0;
     // Start is called before the first frame update
     void Start()
@@ -33,9 +44,14 @@ public class EnemySpawner : MonoBehaviour
         float newZ = newRandY + spawnCenter.position.z;
         float newY = transform.position.y;
         Vector3 spawnPosition = new Vector3(newX,newY,newZ);
-        GameObject enemyGO= Instantiate(enemyPrefab, spawnPosition,Quaternion.identity, enemyContainer);
+        int randomNumber = Random.Range(0, 2);
+        GameObject enemyGO= Instantiate(enemyPrefabs[randomNumber], spawnPosition,Quaternion.identity, enemyContainer);
         float randRotationAngle = Random.Range(0, 360);
         enemyGO.transform.localRotation = Quaternion.Euler(0f,randRotationAngle,0f);
+        OnEnemySpawn?.Invoke(this, new OnEnemySpawnEventArgs
+        {
+            enemyAI = enemyGO.GetComponent<EnemyAI>()
+        }) ;
     }
 
     private void OnDrawGizmos()
